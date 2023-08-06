@@ -19,7 +19,7 @@ require (
 	github.com/storage-lock/go-storage v0.0.0-20230805070648-ce1105955864 // indirect
 	github.com/storage-lock/go-storage-events v0.0.0-20230805074431-3c9e83cd7acb // indirect
 	github.com/storage-lock/go-storage-lock v0.0.0-20230806063848-33d8f297b1c7 // indirect
-	github.com/storage-lock/go-storage-test-helper v0.0.0-20230806085438-c16bd30a33aa // indirect
+	github.com/storage-lock/go-storage-test-helper v0.0.0-20230806122004-626135991a42 // indirect
 	github.com/storage-lock/go-utils v0.0.0-20230804131655-6dbe431cdc1a // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
 	golang.org/x/crypto v0.12.0 // indirect

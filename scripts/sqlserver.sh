@@ -5,6 +5,6 @@ docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=UeGqAm8CxYGldMDLoNNt" \
    -d \
    mcr.microsoft.com/mssql/server:2022-latest
 
-export STORAGE_LOCK_SQLSERVER_DSN="sqlserver://sa:UeGqAm8CxYGldMDLoNNt@192.168.128.206:1433?database=storage_lock_test&connection+timeout=30"
+export STORAGE_LOCK_SQLSERVER_DSN="sqlserver://sa:UeGqAm8CxYGldMDLoNNt@127.0.0.1:1433?database=storage_lock_test&connection+timeout=30"
 
 

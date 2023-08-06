@@ -40,6 +40,8 @@ github.com/storage-lock/go-storage-lock v0.0.0-20230806063848-33d8f297b1c7 h1:0i
 github.com/storage-lock/go-storage-lock v0.0.0-20230806063848-33d8f297b1c7/go.mod h1:mtvTCnwMiwIHctDYkUNOIUKEJSJyIefPuPPUFLJtt0c=
 github.com/storage-lock/go-storage-test-helper v0.0.0-20230806085438-c16bd30a33aa h1:2u/eQ4/Px/3/mjJDbNIK2yAgasd5AUuWumnuIlVFw0o=
 github.com/storage-lock/go-storage-test-helper v0.0.0-20230806085438-c16bd30a33aa/go.mod h1:OMyrAjXA2WSdYFfjFPQMMa8tfMh9D5owQwdJeNwus30=
+github.com/storage-lock/go-storage-test-helper v0.0.0-20230806122004-626135991a42 h1:0CadWj5pz8NCqNLotgde5k9wozk0Oy2AH3Dk7HXiDZ0=
+github.com/storage-lock/go-storage-test-helper v0.0.0-20230806122004-626135991a42/go.mod h1:OMyrAjXA2WSdYFfjFPQMMa8tfMh9D5owQwdJeNwus30=
 github.com/storage-lock/go-utils v0.0.0-20230804131655-6dbe431cdc1a h1:6nSZOPYmogTELlp3ZUmzTbOupdrH7OomezDMKHnSAzA=
 github.com/storage-lock/go-utils v0.0.0-20230804131655-6dbe431cdc1a/go.mod h1:V0M52rFAkNt77MA3odRqwkl1xRkswsEcX/neFbgmhZY=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
