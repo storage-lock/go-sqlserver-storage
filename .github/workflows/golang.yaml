@@ -1,0 +1,28 @@
+name: Go package
+
+on: [ push ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+      # action文档：
+      # https://github.com/marketplace/actions/start-sqlserver
+      - uses: 280780363/sqlserver-action@v1.0
+        with:
+          accept eula: Y #Required, ACCEPT_EULA confirms your acceptance of the End-User Licensing Agreement.
+          # CI里面就直接写死了
+          sa password: "UeGqAm8CxYGldMDLoNNt" # Optional, default value is SqlSever123123.
+
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.19'
+
+      - name: Test
+        run: go test -v ./...
+        env:
+          STORAGE_LOCK_SQLSERVER_DSN: "sqlserver://sa:UeGqAm8CxYGldMDLoNNt@127.0.0.1:1433?database=master&connection+timeout=30"
