@@ -25,7 +25,7 @@ func (x *SqlServerStorageOptions) SetTableName(tableName string) *SqlServerStora
 	return x
 }
 
-func (x *SqlServerStorageOptions) SetConnectionManage(connectionManager storage.ConnectionManager[*sql.DB]) *SqlServerStorageOptions {
+func (x *SqlServerStorageOptions) SetConnectionManager(connectionManager storage.ConnectionManager[*sql.DB]) *SqlServerStorageOptions {
 	x.ConnectionManager = connectionManager
 	return x
 }

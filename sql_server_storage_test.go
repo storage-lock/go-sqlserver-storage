@@ -12,7 +12,7 @@ func TestNewSqlServerStorage(t *testing.T) {
 	envName := "STORAGE_LOCK_SQLSERVER_DSN"
 	dsn := os.Getenv(envName)
 	assert.NotEmpty(t, dsn)
-	connectionGetter := NewSqlServerStorageConnectionGetterFromDSN(dsn)
+	connectionGetter := NewSqlServerConnectionManagerFromDSN(dsn)
 	storage, err := NewSqlServerStorage(context.Background(), &SqlServerStorageOptions{
 		ConnectionManager: connectionGetter,
 		TableName:         storage_test_helper.TestTableName,

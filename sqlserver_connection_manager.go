@@ -8,8 +8,13 @@ import (
 	"sync"
 )
 
-// SqlServerStorageConnectionManager 创建一个SqlServer的连接
-type SqlServerStorageConnectionManager struct {
+const (
+	DriverNameMsSql     = "mssql"
+	DriverNameSqlServer = "sqlserver"
+)
+
+// SqlServerConnectionManager 负责管理与Sql Server服务器的连接
+type SqlServerConnectionManager struct {
 
 	// 主机的名字
 	Host string
@@ -27,24 +32,26 @@ type SqlServerStorageConnectionManager struct {
 	// Example: "sqlserver://sa:UeGqAm8CxYGldMDLoNNt@192.168.128.206:1433"
 	DSN string
 
+	driverName string
+
 	// 初始化好的数据库实例
 	db   *sql.DB
 	err  error
 	once sync.Once
 }
 
-var _ storage.ConnectionManager[*sql.DB] = &SqlServerStorageConnectionManager{}
+var _ storage.ConnectionManager[*sql.DB] = &SqlServerConnectionManager{}
 
-// NewSqlServerStorageConnectionGetterFromDSN 从DSN创建SqlServer连接
-func NewSqlServerStorageConnectionGetterFromDSN(dsn string) *SqlServerStorageConnectionManager {
-	return &SqlServerStorageConnectionManager{
+// NewSqlServerConnectionManagerFromDSN 从DSN创建SqlServer连接
+func NewSqlServerConnectionManagerFromDSN(dsn string) *SqlServerConnectionManager {
+	return &SqlServerConnectionManager{
 		DSN: dsn,
 	}
 }
 
-// NewSqlServerStorageConnectionGetter 从服务器属性创建数据库连接
-func NewSqlServerStorageConnectionGetter(host string, port uint, user, passwd string) *SqlServerStorageConnectionManager {
-	return &SqlServerStorageConnectionManager{
+// NewSqlServerConnectionManager 从服务器属性创建数据库连接
+func NewSqlServerConnectionManager(host string, port uint, user, passwd string) *SqlServerConnectionManager {
+	return &SqlServerConnectionManager{
 		Host:   host,
 		Port:   port,
 		User:   user,
@@ -52,11 +59,18 @@ func NewSqlServerStorageConnectionGetter(host string, port uint, user, passwd st
 	}
 }
 
-func (x *SqlServerStorageConnectionManager) Name() string {
-	return "sql-server-connection-provider"
+func (x *SqlServerConnectionManager) SetDriverName(driverName string) *SqlServerConnectionManager {
+	x.driverName = driverName
+	return x
 }
 
-func (x *SqlServerStorageConnectionManager) GetDSN() string {
+const SqlServerConnectionManagerName = "sql-server-connection-manager"
+
+func (x *SqlServerConnectionManager) Name() string {
+	return SqlServerConnectionManagerName
+}
+
+func (x *SqlServerConnectionManager) GetDSN() string {
 	if x.DSN != "" {
 		return x.DSN
 	}
@@ -64,10 +78,13 @@ func (x *SqlServerStorageConnectionManager) GetDSN() string {
 }
 
 // Take 获取到数据库的连接
-func (x *SqlServerStorageConnectionManager) Take(ctx context.Context) (*sql.DB, error) {
+func (x *SqlServerConnectionManager) Take(ctx context.Context) (*sql.DB, error) {
 	x.once.Do(func() {
-		//db, err := sql.Open("sqlserver", x.GetDSN())
-		db, err := sql.Open("mssql", x.GetDSN())
+		driverName := x.driverName
+		if driverName == "" {
+			driverName = DriverNameMsSql
+		}
+		db, err := sql.Open(driverName, x.GetDSN())
 		if err != nil {
 			x.err = err
 			return
@@ -77,11 +94,11 @@ func (x *SqlServerStorageConnectionManager) Take(ctx context.Context) (*sql.DB, 
 	return x.db, x.err
 }
 
-func (x *SqlServerStorageConnectionManager) Return(ctx context.Context, db *sql.DB) error {
+func (x *SqlServerConnectionManager) Return(ctx context.Context, db *sql.DB) error {
 	return nil
 }
 
-func (x *SqlServerStorageConnectionManager) Shutdown(ctx context.Context) error {
+func (x *SqlServerConnectionManager) Shutdown(ctx context.Context) error {
 	if x.db != nil {
 		return x.db.Close()
 	}
