@@ -6,6 +6,7 @@ import (
 	"github.com/storage-lock/go-storage"
 )
 
+// SqlServerStorageOptions 创建基于SqlServer作为存储的Storage的选项
 type SqlServerStorageOptions struct {
 
 	// 存放锁的表的名字

@@ -42,10 +42,16 @@ type SqlServerConnectionManager struct {
 
 var _ storage.ConnectionManager[*sql.DB] = &SqlServerConnectionManager{}
 
-// NewSqlServerConnectionManagerFromDSN 从DSN创建SqlServer连接
-func NewSqlServerConnectionManagerFromDSN(dsn string) *SqlServerConnectionManager {
+// NewSqlServerConnectionManagerFromDsn 从DSN创建SqlServer连接
+func NewSqlServerConnectionManagerFromDsn(dsn string) *SqlServerConnectionManager {
 	return &SqlServerConnectionManager{
 		DSN: dsn,
+	}
+}
+
+func NewSqlServerConnectionManagerFromSqlDb(db *sql.DB) *SqlServerConnectionManager {
+	return &SqlServerConnectionManager{
+		db: db,
 	}
 }
 
@@ -80,6 +86,9 @@ func (x *SqlServerConnectionManager) GetDSN() string {
 // Take 获取到数据库的连接
 func (x *SqlServerConnectionManager) Take(ctx context.Context) (*sql.DB, error) {
 	x.once.Do(func() {
+		if x.db != nil {
+			return
+		}
 		driverName := x.driverName
 		if driverName == "" {
 			driverName = DriverNameMsSql
