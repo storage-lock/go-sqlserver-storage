@@ -9,6 +9,8 @@ github.com/denisenkom/go-mssqldb v0.12.3/go.mod h1:k0mtMFOnU+AihqFxPMiF05rtiDror
 github.com/dnaeon/go-vcr v1.2.0/go.mod h1:R4UdLID7HZT3taECzJs4YgbbH6PIGXB6W/sc5OLb6RQ=
 github.com/golang-infrastructure/go-goroutine-id v0.0.0-20230331174358-98b48a64077b h1:kt3zNiijgkfPm47YaL4MaQJkw0T7ukEEttnCQMOcWxo=
 github.com/golang-infrastructure/go-goroutine-id v0.0.0-20230331174358-98b48a64077b/go.mod h1:1L+eneS0HXUlZP0tmESGhlmpJ3hl063JGz6UQaJCmY0=
+github.com/golang-infrastructure/go-if-expression v0.0.3 h1:Ic6L/s250nwtQz8CtTFpkWopCwsWmxQErSRkrBqBVj4=
+github.com/golang-infrastructure/go-if-expression v0.0.3/go.mod h1:U4ZtU29/RtZ/cM0tAdBzFaFxENFShSFj+jCRFRE/cv4=
 github.com/golang-infrastructure/go-iterator v0.0.0-20230524171120-56988a9b127c h1:h4321AFRVv5rTKcColUjE5pa+Y1exG1e6aEXn43L/Eg=
 github.com/golang-infrastructure/go-iterator v0.0.0-20230524171120-56988a9b127c/go.mod h1:Guf14ZZ7f7qiE0YpZbUkICcm7LWc3nrn3/gDObT//WI=
 github.com/golang-infrastructure/go-pointer v0.0.5 h1:wzZ/XnXKzD3DWECTnUpUh+xAlGSWqfn/pQyusPNsqrQ=
@@ -39,8 +41,12 @@ github.com/storage-lock/go-storage-events v0.0.5 h1:qUgB/VZIQNM0PIos67T9D1JIqu3Y
 github.com/storage-lock/go-storage-events v0.0.5/go.mod h1:aBMVsOSr61+BLxO3QnU5FwKd5bdMGE4IpV0oDrAg8uQ=
 github.com/storage-lock/go-storage-lock v0.0.3 h1:eobL73fhfAjLKNk4msQNTYFcilrPKwySXY/5ympfeRU=
 github.com/storage-lock/go-storage-lock v0.0.3/go.mod h1:kzyjFhgPmiYMwLuuVoQfYxXPUOIGNETA+Z/wDnRc/iw=
+github.com/storage-lock/go-storage-lock v0.0.4 h1:Cr75wUDd1wxGyjgavr+jBPQ1zZr6r7TAB6q7NSf1fv0=
+github.com/storage-lock/go-storage-lock v0.0.4/go.mod h1:kzyjFhgPmiYMwLuuVoQfYxXPUOIGNETA+Z/wDnRc/iw=
 github.com/storage-lock/go-storage-test-helper v0.0.2 h1:6uipDmyxhncEJJSVwPiydKJrGVLoFARwbnkarDfhWSY=
 github.com/storage-lock/go-storage-test-helper v0.0.2/go.mod h1:JrQptW0yJZVqDsObE9vWSoyZxhQHdQDM8/eh4vz7Tls=
+github.com/storage-lock/go-storage-test-helper v0.0.3 h1:y8B24zJkQaI7uYOW2MTBIHTZXbRpkEG6rS1XMWAttjs=
+github.com/storage-lock/go-storage-test-helper v0.0.3/go.mod h1:Zn6YIq0r0pmK+naGUhRhb7TqTEFDjoU+25yIugt9iAw=
 github.com/storage-lock/go-utils v0.0.2 h1:pdacTOlD+AHqwWVmDqZLcjKF+7p8TjsmlvZ9bmmkIfE=
 github.com/storage-lock/go-utils v0.0.2/go.mod h1:tx8ATHL7yOC0Nyjpba7hJNk0+QNt2XEnMr8NcGm9Gak=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
