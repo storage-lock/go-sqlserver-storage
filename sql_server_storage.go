@@ -6,6 +6,8 @@ import (
 	"fmt"
 	sql_based_storage "github.com/storage-lock/go-sql-based-storage"
 	"github.com/storage-lock/go-storage"
+	storage_lock "github.com/storage-lock/go-storage-lock"
+	"strings"
 	"time"
 
 	_ "github.com/denisenkom/go-mssqldb"
@@ -133,35 +135,20 @@ CREATE TABLE %s (
 //	}
 //	return nil
 //}
-//
-//func (x *SqlServerStorage) CreateWithVersion(ctx context.Context, lockId string, version storage.Version, lockInformation *storage.LockInformation) (returnError error) {
-//
-//	db, err := x.options.ConnectionManager.Take(ctx)
-//	if err != nil {
-//		return err
-//	}
-//	defer func() {
-//		err := x.options.ConnectionManager.Return(ctx, db)
-//		if returnError == nil {
-//			returnError = err
-//		}
-//	}()
-//
-//	insertSql := fmt.Sprintf(`INSERT INTO %s (lock_id, owner_id, version, lock_information_json_string) VALUES (?, ?, ?, ?)`, x.tableFullName)
-//	execContext, err := db.ExecContext(ctx, insertSql, lockId, lockInformation.OwnerId, version, lockInformation.ToJsonString())
-//	if err != nil {
-//		return err
-//	}
-//	affected, err := execContext.RowsAffected()
-//	if err != nil {
-//		return err
-//	}
-//	if affected == 0 {
-//		return storage_lock.ErrVersionMiss
-//	}
-//	return nil
-//}
-//
+
+func (x *SqlServerStorage) CreateWithVersion(ctx context.Context, lockId string, version storage.Version, lockInformation *storage.LockInformation) (returnError error) {
+	returnError = x.SqlBasedStorage.CreateWithVersion(ctx, lockId, version, lockInformation)
+	if returnError != nil {
+		errorMsg := returnError.Error()
+		// 把SqlServer主键重复的错误转换为StorageLock框架内部的Version Miss的错误
+		// panic: mssql: Violation of PRIMARY KEY constraint 'PK__storage___AE35FA63FDC73D2D'. Cannot insert duplicate key in object 'dbo.storage_lock'. The duplicate key value is (35dc907fdbef4eb6b61718c6d083492d).
+		if strings.Contains(errorMsg, "Violation of PRIMARY KEY constraint") {
+			return storage_lock.ErrVersionMiss
+		}
+	}
+	return returnError
+}
+
 //func (x *SqlServerStorage) DeleteWithVersion(ctx context.Context, lockId string, exceptedVersion storage.Version, lockInformation *storage.LockInformation) (returnError error) {
 //
 //	db, err := x.options.ConnectionManager.Take(ctx)
