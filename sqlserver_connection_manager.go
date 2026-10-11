@@ -4,8 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/storage-lock/go-storage"
 	"sync"
+
+	"github.com/storage-lock/go-storage"
 )
 
 const (
@@ -37,8 +38,14 @@ type SqlServerConnectionManager struct {
 	// 初始化好的数据库实例
 	db   *sql.DB
 	err  error
+	open func(string, string) (*sql.DB, error)
 	once sync.Once
 }
+
+const SqlServerConnectionManagerName = "sql-server-connection-manager"
+
+// SqlServerOpen 默认走 database/sql，测试可替换，避免示例必须连接真实数据库。
+var SqlServerOpen = sql.Open
 
 var _ storage.ConnectionManager[*sql.DB] = &SqlServerConnectionManager{}
 
@@ -70,8 +77,6 @@ func (x *SqlServerConnectionManager) SetDriverName(driverName string) *SqlServer
 	return x
 }
 
-const SqlServerConnectionManagerName = "sql-server-connection-manager"
-
 func (x *SqlServerConnectionManager) Name() string {
 	return SqlServerConnectionManagerName
 }
@@ -79,6 +84,10 @@ func (x *SqlServerConnectionManager) Name() string {
 func (x *SqlServerConnectionManager) GetDSN() string {
 	if x.DSN != "" {
 		return x.DSN
+	}
+	driverName := x.driverName
+	if driverName == "" {
+		driverName = DriverNameMsSql
 	}
 	return fmt.Sprintf("sqlserver://%s:%s@%s:%d", x.User, x.Passwd, x.Host, x.Port)
 }
@@ -89,11 +98,14 @@ func (x *SqlServerConnectionManager) Take(ctx context.Context) (*sql.DB, error) 
 		if x.db != nil {
 			return
 		}
-		driverName := x.driverName
-		if driverName == "" {
-			driverName = DriverNameMsSql
+		if x.err != nil {
+			return
 		}
-		db, err := sql.Open(driverName, x.GetDSN())
+		open := x.open
+		if open == nil {
+			open = SqlServerOpen
+		}
+		db, err := open(x.driverName, x.GetDSN())
 		if err != nil {
 			x.err = err
 			return
@@ -103,7 +115,7 @@ func (x *SqlServerConnectionManager) Take(ctx context.Context) (*sql.DB, error) 
 	return x.db, x.err
 }
 
-func (x *SqlServerConnectionManager) Return(ctx context.Context, db *sql.DB) error {
+func (x *SqlServerConnectionManager) Return(ctx context.Context, connection *sql.DB) error {
 	return nil
 }
 

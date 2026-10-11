@@ -2,7 +2,7 @@ package sqlserver_storage
 
 import (
 	"database/sql"
-	"fmt"
+
 	"github.com/storage-lock/go-storage"
 )
 
@@ -27,20 +27,14 @@ func (x *SqlServerStorageOptions) SetTableName(tableName string) *SqlServerStora
 	return x
 }
 
-func (x *SqlServerStorageOptions) SetConnectionManager(connectionManager storage.ConnectionManager[*sql.DB]) *SqlServerStorageOptions {
-	x.ConnectionManager = connectionManager
+func (x *SqlServerStorageOptions) SetConnectionManager(connManager storage.ConnectionManager[*sql.DB]) *SqlServerStorageOptions {
+	x.ConnectionManager = connManager
 	return x
 }
 
 func (x *SqlServerStorageOptions) Check() error {
-
-	if x.TableName == "" {
-		x.TableName = storage.DefaultStorageTableName
-	}
-
 	if x.ConnectionManager == nil {
-		return fmt.Errorf("ConnectionManager can not empty")
+		return ErrSqlServerStorageOptionsConnectionManagerNil
 	}
-
 	return nil
 }

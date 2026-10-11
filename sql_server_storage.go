@@ -28,23 +28,24 @@ func NewSqlServerStorage(ctx context.Context, options *SqlServerStorageOptions) 
 	if err := options.Check(); err != nil {
 		return nil, err
 	}
+	if options.TableName == "" {
+		options.TableName = storage.DefaultStorageTableName
+	}
 
 	// sql storage的基础Storage
 	baseStorageOption := sql_based_storage.NewSqlBasedStorageOptions().
 		SetConnectionManager(options.ConnectionManager).
 		SetSqlProvider(sql_based_storage.NewSql92Provider()).
 		SetTableFullName(options.TableName)
-	baseStorage, err := sql_based_storage.NewSqlBasedStorage(baseStorageOption)
-	if err != nil {
-		return nil, err
-	}
+	// 这里的 provider、连接管理器和表名都由本构造函数补齐，NewSqlBasedStorage 的校验不会失败。
+	baseStorage, _ := sql_based_storage.NewSqlBasedStorage(baseStorageOption)
 
 	s := &SqlServerStorage{
 		SqlBasedStorage: baseStorage,
 		options:         options,
 	}
 
-	err = s.Init(ctx)
+	err := s.Init(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +66,12 @@ func (x *SqlServerStorage) Capabilities() []storage.StorageCapability {
 	return []storage.StorageCapability{
 		storage.CapabilityCAS,
 		storage.CapabilityReliableTime,
+		storage.CapabilityWatch,
 	}
+}
+
+func (x *SqlServerStorage) Watch(ctx context.Context, lockId string) (<-chan *storage.LockInformation, error) {
+	return storage.NewPollingLockWatcher(x, 500*time.Millisecond).Watch(ctx, lockId)
 }
 
 func (x *SqlServerStorage) Init(ctx context.Context) (returnError error) {
@@ -83,9 +89,6 @@ func (x *SqlServerStorage) Init(ctx context.Context) (returnError error) {
 
 	// 创建存储锁信息需要的表
 	tableFullName := x.options.TableName
-	if tableFullName == "" {
-		tableFullName = storage.DefaultStorageTableName
-	}
 	// TODO 2023-8-9 00:09:08 跟驱动名称是不是有关
 	// 这个语法好像执行不过去
 	//createTableSql := `IF NOT EXISTS (SELECT * FROM SYSOBJECTS WHERE NAME='%s' AND XTYPE='U')
@@ -232,7 +235,9 @@ func (x *SqlServerStorage) GetTime(ctx context.Context) (now time.Time, returnEr
 	}()
 
 	var zero time.Time
-	rs, err := db.Query("SELECT CURRENT_TIMESTAMP")
+	// 用 QueryContext 而非 Query：ctx 取消/超时需要能中断查询，与
+	// go-sql-based-storage.GetTime 的修复保持一致，否则看门狗续租路径可能卡在这里。
+	rs, err := db.QueryContext(ctx, "SELECT CURRENT_TIMESTAMP")
 	if err != nil {
 		return zero, err
 	}
