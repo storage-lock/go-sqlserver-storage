@@ -7,7 +7,7 @@ require (
 	github.com/denisenkom/go-mssqldb v0.12.3
 	github.com/storage-lock/go-sql-based-storage v0.0.2
 	github.com/storage-lock/go-storage v0.1.0
-	github.com/storage-lock/go-storage-lock v0.0.6
+	github.com/storage-lock/go-storage-lock v0.1.0
 	github.com/stretchr/testify v1.11.1
 )
 
